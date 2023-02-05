@@ -13,6 +13,7 @@ morgan.token('content', function getContent(req) {
 
 app.use(express.json())
 app.use(cors())
+app.use(express.static('build'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time :content', {
   skip: function (req, res) { return req.method !== 'POST' }
 }))
