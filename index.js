@@ -49,23 +49,30 @@ let persons = [
   }
 ]
 
+// Get all contacts
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
     res.json(persons)
   })
 })
 
+// Get one contact by Id
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.status(404).end()
-  }
+  Person.findById(req.params.id)
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).end()
+    })
 })
 
+// Delete one contact by Id
 app.delete('/api/persons/:id', (req, res) => {
   const id = Number(req.params.id)
   persons = persons.filter(person => person.id !== id)
@@ -73,6 +80,7 @@ app.delete('/api/persons/:id', (req, res) => {
   res.status(204).end()
 })
 
+// Add new contact
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -81,20 +89,20 @@ app.post('/api/persons', (req, res) => {
       error: 'name or number missing'
     })
   }
-  if (persons.find(person => person.name === body.name)) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  // if (Person.find({ name: body.name })) {
+  //   return res.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
 
-  const person = {
-    id: Math.floor(Math.random() * 1000) + 1,
+  const person = new Person({
     name: body.name,
     number: body.number
-  }
+  })
 
-  persons = persons.concat(person)
-  res.json(person)
+  person.save().then(savedPerson => {
+    res.json(savedPerson)
+  })
 })
 
 app.get('/info', (req, res) => {
