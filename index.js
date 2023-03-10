@@ -46,9 +46,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 // Delete one contact by Id
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(res => {
-      res.status(204).end()
-    })
+    .then(res.status(204).end())
     .catch(error => next(error))
 })
 
