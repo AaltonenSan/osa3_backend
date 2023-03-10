@@ -4,7 +4,6 @@ const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
 const Person = require('./models/Person')
-const { response } = require('express')
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' })
@@ -18,10 +17,10 @@ app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time :content', {
-  skip: function (req, res) { return req.method !== 'POST' }
+  skip: function (req) { return req.method !== 'POST' }
 }))
 app.use(morgan('tiny', {
-  skip: function (req, res) { return req.method === 'POST' }
+  skip: function (req) { return req.method === 'POST' }
 }))
 
 // Get all contacts
@@ -47,7 +46,7 @@ app.get('/api/persons/:id', (req, res, next) => {
 // Delete one contact by Id
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
+    .then(res => {
       res.status(204).end()
     })
     .catch(error => next(error))
@@ -76,7 +75,7 @@ app.post('/api/persons', (req, res, next) => {
 
 // Update contact
 app.put('/api/persons/:id', (req, res, next) => {
-  const { name, number } = req.body;
+  const { name, number } = req.body
 
   if (!name || !number) {
     return res.status(400).json({
