@@ -1,8 +1,8 @@
-# POST http://localhost:3001/api/persons 
-POST https://puhelinluettelo-back.onrender.com/api/persons/
+POST http://localhost:3001/api/persons 
+# POST https://puhelinluettelo-back.onrender.com/api/persons/
 Content-Type: application/json
 
 {
-  "name": "Matti Virtanen",
+  "name": "Tero Testis",
   "number": "0400-123123"
 }
